@@ -53,8 +53,8 @@ export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
               amount: isOutgoing ? -Math.abs(parseFloat(t.amount)) : Math.abs(parseFloat(t.amount)),
               displayDate: t.date,
               description: isOutgoing 
-                ? `Enviar a ${accountMap[t.toAccountId] || 'Cuenta'}`
-                : `Recibir de ${accountMap[t.fromAccountId] || 'Cuenta'}`,
+                ? `Envoyer a ${accountMap[t.toAccountId] || 'Compte'}`
+                : `Recevoir de ${accountMap[t.fromAccountId] || 'Compte'}`,
             };
           });
 
