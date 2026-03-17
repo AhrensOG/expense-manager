@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import { toast } from 'sonner';
 import { 
   Briefcase, 
@@ -16,6 +17,7 @@ import {
   Trash2,
   Sun,
   Moon,
+  LogOut,
 } from 'lucide-react';
 import { SettingsSection } from './SettingsSection';
 import { SettingsRow } from './SettingsRow';
@@ -508,6 +510,33 @@ export const ReglagesPage = ({ isMobile, locale, isDark, toggleTheme }) => {
               </div>
             </div>
           </SettingsSection>
+
+          {/* Logout button */}
+          <div style={{ padding: '0 16px' }}>
+            <button
+              onClick={() => signOut({ callbackUrl: `/${locale}/login` })}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                width: '100%',
+                padding: '16px',
+                backgroundColor: 'var(--bg)',
+                border: 'none',
+                borderRadius: '12px',
+                color: '#FF5A3C',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                minHeight: '48px',
+                marginTop: '8px',
+              }}
+            >
+              <LogOut size={18} />
+              Déconnexion
+            </button>
+          </div>
 
         </div>
       </div>
