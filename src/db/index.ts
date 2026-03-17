@@ -1,0 +1,10 @@
+export { sequelize } from './config/database';
+export { User } from './models/User';
+export { Currency } from './models/Currency';
+export { Category } from './models/Category';
+export { Trip } from './models/Trip';
+export { Expense } from './models/Expense';
+export { Income } from './models/Income';
+export { Account } from './models/Account';
+export { Recurring } from './models/Recurring';
+export { Transfer } from './models/Transfer';
