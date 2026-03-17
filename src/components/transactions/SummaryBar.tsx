@@ -53,8 +53,8 @@ export const SummaryBar = ({
   return (
     <div
       style={{
-        position: "sticky",
-        top: isMobile ? "165px" : "189px",
+        // position: "sticky",
+        // top: isMobile ? "165px" : "189px",
         display: "flex",
         backgroundColor: "var(--card-bg)",
         boxShadow: "var(--shadow-sm)",

@@ -29,7 +29,7 @@ export const MonthNavigator = ({
   return (
     <div
       style={{
-        position: "sticky",
+        // position: "sticky",
         backgroundColor: "var(--card-bg)",
         zIndex: 40,
         display: "flex",

@@ -12,7 +12,7 @@ export const TabBar = ({ activeTab, onTabChange, isMobile = false }) => {
   return (
     <div
       style={{
-        position: "sticky",
+        // position: "sticky",
         display: "flex",
         justifyContent: isMobile ? "center" : "flex-start",
         borderBottom: "1px solid var(--border)",
