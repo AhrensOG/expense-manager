@@ -47,7 +47,7 @@ export const AddCategoryInline = ({ onAdd, onBack }) => {
         {/* Name Input */}
         <div style={{ marginBottom: '24px' }}>
           <label style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            Nom de la catégorie
+            Nom de la catégorie HOLA
           </label>
           <input
             type="text"

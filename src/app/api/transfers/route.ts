@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     const transfers = await Transfer.findAll({
       where: { userId: parseInt(token.sub) },
       include: [
-        { model: Currency },
+        { model: Currency, as: 'Currency' },
         { model: Account, as: 'fromAccount' },
         { model: Account, as: 'toAccount' },
       ],

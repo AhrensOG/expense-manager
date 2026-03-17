@@ -61,15 +61,20 @@ export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
         const allTransactions = [
           ...expenses.map(e => ({
             ...e,
+            id: `expense-${e.id}`,
             type: 'expense',
             displayDate: e.date,
           })),
           ...incomes.map(i => ({
             ...i,
+            id: `income-${i.id}`,
             type: 'income',
             displayDate: i.date,
           })),
-          ...transferTxs,
+          ...transferTxs.map(t => ({
+            ...t,
+            id: `transfer-${t.id}`,
+          })),
         ];
 
         setTransactions(allTransactions);
