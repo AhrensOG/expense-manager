@@ -7,6 +7,14 @@ import { getIconComponent, availableIcons } from '@/lib/icons';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import api from '@/lib/api';
 
+const ACCOUNT_TYPE_ICONS: Record<string, string> = {
+  cash: 'wallet',
+  bank: 'building',
+  credit_card: 'creditCard',
+  savings: 'piggyBank',
+  other: 'folder',
+};
+
 export const AddTransactionSheet = ({ 
   isOpen, 
   onClose, 
@@ -99,6 +107,7 @@ const TransactionFormWrapper = ({
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [selectingAccountField, setSelectingAccountField] = useState<'method' | 'fromMethod' | 'toMethod' | null>(null);
   
   // Category creation state
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -238,6 +247,13 @@ const TransactionFormWrapper = ({
     }
     setShowDeleteConfirm(false);
     onClose();
+  };
+
+  const handleSwapAccounts = () => {
+    const from = formData.fromMethod;
+    const to = formData.toMethod;
+    updateField('fromMethod', to);
+    updateField('toMethod', from);
   };
 
   const handleSubmit = async () => {
@@ -552,29 +568,50 @@ const TransactionFormWrapper = ({
           </button>
         </div>
         <div style={{ flex: 1, overflow: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {paymentMethods.map((acc: any) => (
-            <button
-              key={acc.id}
-              onClick={() => {
-                updateField('method', acc.id);
-                setView('form');
-              }}
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                backgroundColor: formData.method === acc.id ? 'var(--accent)' : 'var(--bg)',
-                color: formData.method === acc.id ? '#FFF' : 'var(--text-primary)',
-                textAlign: 'left',
-                fontSize: '16px',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <span>{acc.label}</span>
-              {/* <span style={{ opacity: 0.7 }}>{getAccountBalance(acc.id)}</span> */}
-            </button>
-          ))}
+          {paymentMethods.map((acc: any) => {
+            const isSelected = selectingAccountField === 'fromMethod' 
+              ? formData.fromMethod === acc.id
+              : selectingAccountField === 'toMethod'
+                ? formData.toMethod === acc.id
+                : formData.method === acc.id;
+            const accData = accounts?.find((a: any) => a.id.toString() === acc.id);
+            const accountIcon = accData?.type ? ACCOUNT_TYPE_ICONS[accData.type] : 'Wallet';
+            const Icon = getIconComponent(accountIcon);
+            return (
+              <button
+                key={acc.id}
+                onClick={() => {
+                  if (selectingAccountField) {
+                    updateField(selectingAccountField, acc.id);
+                  } else {
+                    updateField('method', acc.id);
+                  }
+                  setSelectingAccountField(null);
+                  setView('form');
+                }}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: isSelected ? 'var(--accent)' : 'var(--bg)',
+                  color: isSelected ? '#FFF' : 'var(--text-primary)',
+                  textAlign: 'left',
+                  fontSize: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {Icon && <Icon size={20} color={isSelected ? '#FFF' : 'var(--text-secondary)'} />}
+                  {acc.label}
+                </span>
+                <span style={{ color: isSelected ? '#FFF' : 'var(--text-secondary)', fontSize: '13px' }}>
+                  {getAccountBalance(acc.id)}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -793,7 +830,11 @@ const TransactionFormWrapper = ({
         formData={formData}
         updateField={updateField}
         onSelectCategory={() => setView('category')}
-        onSelectAccount={() => setView('account')}
+        onSelectAccount={(field) => {
+          setSelectingAccountField(field);
+          setView('account');
+        }}
+        onSwapAccounts={handleSwapAccounts}
         isEditMode={isEditMode}
         onClose={onClose}
         onSubmit={handleSubmit}
@@ -801,6 +842,7 @@ const TransactionFormWrapper = ({
         paymentMethods={paymentMethods}
         categories={categories}
         getAccountBalance={getAccountBalance}
+        accounts={accounts}
       />
 
       {/* Edit mode buttons */}
@@ -856,6 +898,7 @@ const TransactionFormContent = ({
   updateField, 
   onSelectCategory, 
   onSelectAccount,
+  onSwapAccounts,
   isEditMode, 
   onClose, 
   onSubmit, 
@@ -863,11 +906,13 @@ const TransactionFormContent = ({
   paymentMethods,
   categories,
   getAccountBalance,
+  accounts,
 }: { 
   formData: FormData; 
   updateField: (field: string, value: string) => void; 
   onSelectCategory: () => void; 
-  onSelectAccount: () => void; 
+  onSelectAccount: (field: 'method' | 'fromMethod' | 'toMethod') => void; 
+  onSwapAccounts?: () => void;
   isEditMode?: boolean; 
   onClose: () => void; 
   onSubmit?: () => void; 
@@ -875,6 +920,7 @@ const TransactionFormContent = ({
   paymentMethods: { id: string; label: string; balance?: number }[];
   categories?: any[];
   getAccountBalance: (accountId: string) => string;
+  accounts?: any[];
 }) => {
   const expenseCats = categories?.filter((c: any) => c.type === 'expense' || c.type === 'both') || [];
   const incomeCats = categories?.filter((c: any) => c.type === 'income' || c.type === 'both') || [];
@@ -966,16 +1012,58 @@ const TransactionFormContent = ({
         <>
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>De</label>
-            <button style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-primary)' }}>
-              <span>{paymentMethods.find(m => m.id === formData.fromMethod)?.label}</span>
-              <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{getAccountBalance(formData.fromMethod)}</span>
+            <button onClick={() => onSelectAccount('fromMethod')} style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-primary)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {(() => {
+                  const acc = accounts?.find((a: any) => a.id.toString() === formData.fromMethod);
+                  const accountIcon = acc?.type ? ACCOUNT_TYPE_ICONS[acc.type] : 'Wallet';
+                  const Icon = acc ? getIconComponent(accountIcon) : null;
+                  return Icon ? <Icon size={18} /> : null;
+                })()}
+                {paymentMethods.find(m => m.id === formData.fromMethod)?.label}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{getAccountBalance(formData.fromMethod)}</span>
+                <ChevronDown size={18} />
+              </div>
+            </button>
+          </div>
+          {/* Swap button */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={onSwapAccounts}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--accent)',
+                rotate: '90deg',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <ArrowRightLeft size={14} color="#FFF" />
             </button>
           </div>
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Vers</label>
-            <button style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-primary)' }}>
-              <span>{paymentMethods.find(m => m.id === formData.toMethod)?.label}</span>
-              <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{getAccountBalance(formData.toMethod)}</span>
+            <button onClick={() => onSelectAccount('toMethod')} style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-primary)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {(() => {
+                  const acc = accounts?.find((a: any) => a.id.toString() === formData.toMethod);
+                  const accountIcon = acc?.type ? ACCOUNT_TYPE_ICONS[acc.type] : 'Wallet';
+                  const Icon = acc ? getIconComponent(accountIcon) : null;
+                  return Icon ? <Icon size={18} /> : null;
+                })()}
+                {paymentMethods.find(m => m.id === formData.toMethod)?.label}
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{getAccountBalance(formData.toMethod)}</span>
+                <ChevronDown size={18} />
+              </div>
             </button>
           </div>
         </>
@@ -993,8 +1081,16 @@ const TransactionFormContent = ({
           </div>
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' }}>Compte</label>
-            <button onClick={onSelectAccount} style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-primary)' }}>
-              <span>{selectedMethod?.label}</span>
+            <button onClick={() => onSelectAccount('method')} style={{ width: '100%', padding: '14px', backgroundColor: 'var(--bg)', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-primary)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {(() => {
+                  const acc = accounts?.find((a: any) => a.id.toString() === formData.method);
+                  const accountIcon = acc?.type ? ACCOUNT_TYPE_ICONS[acc.type] : 'Wallet';
+                  const Icon = acc ? getIconComponent(accountIcon) : null;
+                  return Icon ? <Icon size={18} /> : null;
+                })()}
+                {selectedMethod?.label}
+              </span>
               <ChevronDown size={18} />
             </button>
           </div>
