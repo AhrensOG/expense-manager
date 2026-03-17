@@ -1,0 +1,82 @@
+{
+  "Home": {
+    "title": "Geneva Expense Manager",
+    "welcome": "Bon retour",
+    "balance": "Solde",
+    "income": "Revenus",
+    "expenses": "Dépenses",
+    "expensesByCategory": "Dépenses par catégorie",
+    "recentTransactions": "Transactions récentes",
+    "seeAll": "Voir tout",
+    "addExpense": "Ajouter une transaction",
+    "thisMonth": "Ce mois",
+    "addNew": "Ajouter"
+  },
+  "Nav": {
+    "home": "Accueil",
+    "accounts": "Comptes",
+    "statistics": "Statistiques",
+    "settings": "Paramètres",
+    "expenses": "Dépenses",
+    "income": "Revenus",
+    "totalBalance": "Solde total"
+  },
+  "Accounts": {
+    "title": "Comptes",
+    "totalBalance": "Solde total",
+    "addAccount": "Ajouter un compte",
+    "cash": "Espèces",
+    "bank": "Banque",
+    "creditCard": "Carte de crédit",
+    "savings": "Épargne",
+    "other": "Autre",
+    "noAccounts": "Aucun compte"
+  },
+  "Statistics": {
+    "title": "Statistiques",
+    "overview": "Aperçu",
+    "byCategory": "Par catégorie",
+    "byMonth": "Par mois",
+    "byAccount": "Par compte",
+    "income": "Revenus",
+    "expense": "Dépenses",
+    "balance": "Solde",
+    "noData": "Aucune donnée"
+  },
+  "Common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "Currency": {
+    "chf": "CHF"
+  },
+  "Categories": {
+    "food": "Alimentation",
+    "transport": "Transport",
+    "shopping": "Shopping",
+    "utilities": "Services",
+    "entertainment": "Divertissement",
+    "health": "Santé",
+    "income": "Revenus",
+    "addCategory": "Ajouter une catégorie",
+    "categoryName": "Nom de la catégorie",
+    "selectIcon": "Sélectionner une icône",
+    "selectColor": "Sélectionner une couleur"
+  },
+  "Form": {
+    "amount": "Montant",
+    "description": "Description",
+    "category": "Catégorie",
+    "date": "Date",
+    "account": "Compte",
+    "type": "Type",
+    "name": "Nom"
+  }
+}

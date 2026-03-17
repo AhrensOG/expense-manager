@@ -1,0 +1,82 @@
+{
+  "Home": {
+    "title": "Geneva Expense Manager",
+    "welcome": "Welcome back",
+    "balance": "Balance",
+    "income": "Income",
+    "expenses": "Expenses",
+    "expensesByCategory": "Expenses by Category",
+    "recentTransactions": "Recent Transactions",
+    "seeAll": "See all",
+    "addExpense": "Add Transaction",
+    "thisMonth": "This Month",
+    "addNew": "Add New"
+  },
+  "Nav": {
+    "home": "Home",
+    "accounts": "Accounts",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "expenses": "Expenses",
+    "income": "Income",
+    "totalBalance": "Total Balance"
+  },
+  "Accounts": {
+    "title": "Accounts",
+    "totalBalance": "Total Balance",
+    "addAccount": "Add Account",
+    "cash": "Cash",
+    "bank": "Bank",
+    "creditCard": "Credit Card",
+    "savings": "Savings",
+    "other": "Other",
+    "noAccounts": "No accounts yet"
+  },
+  "Statistics": {
+    "title": "Statistics",
+    "overview": "Overview",
+    "byCategory": "By Category",
+    "byMonth": "By Month",
+    "byAccount": "By Account",
+    "income": "Income",
+    "expense": "Expense",
+    "balance": "Balance",
+    "noData": "No data available"
+  },
+  "Common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "Currency": {
+    "chf": "CHF"
+  },
+  "Categories": {
+    "food": "Food",
+    "transport": "Transport",
+    "shopping": "Shopping",
+    "utilities": "Utilities",
+    "entertainment": "Entertainment",
+    "health": "Health",
+    "income": "Income",
+    "addCategory": "Add Category",
+    "categoryName": "Category Name",
+    "selectIcon": "Select Icon",
+    "selectColor": "Select Color"
+  },
+  "Form": {
+    "amount": "Amount",
+    "description": "Description",
+    "category": "Category",
+    "date": "Date",
+    "account": "Account",
+    "type": "Type",
+    "name": "Name"
+  }
+}
