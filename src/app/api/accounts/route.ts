@@ -1,12 +1,13 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { z } from 'zod';
-import { Account, Currency } from '@/db';
+import { Account, Currency, Income, Category } from '@/db';
 
 const accountSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
   type: z.enum(['cash', 'bank', 'credit_card', 'savings', 'other']),
   balance: z.number().default(0),
+  initialBalance: z.number().optional(),
   currencyId: z.number().int().positive('Invalid currency ID'),
 });
 
@@ -74,6 +75,35 @@ export async function POST(request: NextRequest) {
       currencyId,
       userId: parseInt(token.sub),
     });
+
+    // Create initial balance income if provided
+    if (balance && balance > 0) {
+      // Find or create the "Balance initial" category
+      let balanceCategory = await Category.findOne({
+        where: { name: 'Balance initial', type: 'income', userId: null }
+      });
+
+      if (!balanceCategory) {
+        balanceCategory = await Category.create({
+          name: 'Balance initial',
+          type: 'income',
+          icon: 'wallet',
+          color: '#4A90D9',
+          userId: null,
+        });
+      }
+
+      // Create the income record
+      await Income.create({
+        amount: balance,
+        description: 'Balance initial',
+        date: new Date(),
+        userId: parseInt(token.sub),
+        currencyId,
+        categoryId: balanceCategory.id,
+        accountId: account.id,
+      });
+    }
 
     const accountWithRelations = await Account.findByPk(account.id, {
       include: [{ model: Currency, as: 'Currency' }],
