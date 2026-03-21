@@ -7,6 +7,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { ComptesPage } from '@/components/comptes/ComptesPage';
 import { AddAccountSheet } from '@/components/comptes/AddAccountSheet';
+import { EditAccountSheet } from '@/components/comptes/EditAccountSheet';
 import { CompteDetailPage } from '@/components/comptes/CompteDetailPage';
 import { accounts as allAccounts } from '@/data/mockData';
 import { ProtectedRoute } from '@/components/providers/ProtectedRoute';
@@ -41,6 +42,8 @@ interface Account {
 
 function MainContent({ isDark, isMobile, toggleTheme, locale }: PageWrapperProps & { locale: string }) {
   const [showAddAccount, setShowAddAccount] = useState(false);
+  const [showEditAccount, setShowEditAccount] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
   const [selectedAccountId, setSelectedAccountId] = useState<string | number | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   
@@ -50,6 +53,22 @@ function MainContent({ isDark, isMobile, toggleTheme, locale }: PageWrapperProps
 
   const handleAddAccount = (account: any) => {
     console.log('Added account:', account);
+    setRefreshKey(k => k + 1);
+  };
+
+  const handleEditAccount = (account: any) => {
+    setEditingAccount(account);
+    setShowEditAccount(true);
+  };
+
+  const handleDeleteAccount = (accountId: any) => {
+    setShowEditAccount(false);
+    setSelectedAccountId(null);
+    setRefreshKey(k => k + 1);
+  };
+
+  const handleAccountUpdated = () => {
+    setShowEditAccount(false);
     setRefreshKey(k => k + 1);
   };
 
@@ -77,6 +96,7 @@ function MainContent({ isDark, isMobile, toggleTheme, locale }: PageWrapperProps
               accountId={selectedAccountId}
               onBack={() => setSelectedAccountId(null)}
               isMobile={isMobile}
+              onEdit={handleEditAccount}
             />
           ) : (
             <ComptesPage
@@ -96,6 +116,15 @@ function MainContent({ isDark, isMobile, toggleTheme, locale }: PageWrapperProps
         isOpen={showAddAccount}
         onClose={() => setShowAddAccount(false)}
         onAdd={handleAddAccount}
+        isMobile={isMobile}
+      />
+
+      <EditAccountSheet
+        isOpen={showEditAccount}
+        onClose={() => setShowEditAccount(false)}
+        onEdit={handleAccountUpdated}
+        onDelete={handleDeleteAccount}
+        account={editingAccount}
         isMobile={isMobile}
       />
     </div>

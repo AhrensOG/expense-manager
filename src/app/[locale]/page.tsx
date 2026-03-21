@@ -264,17 +264,31 @@ function MainContent({
         onSubmit={async (data) => {
           if (editingTransaction) {
             try {
-              await updateTransaction(
-                editingTransaction.id,
-                {
-                  amount: Math.abs(parseFloat(data.amount)),
-                  description: data.description,
-                  date: data.date,
-                  categoryId: data.categoryId,
-                  accountId: data.accountId,
-                },
-                editingTransaction.type,
-              );
+              if (editingTransaction.type === 'transfer') {
+                await updateTransaction(
+                  editingTransaction.id,
+                  {
+                    amount: Math.abs(parseFloat(data.amount)),
+                    description: data.description,
+                    date: data.date,
+                    fromAccountId: data.fromAccountId,
+                    toAccountId: data.toAccountId,
+                  },
+                  'transfer',
+                );
+              } else {
+                await updateTransaction(
+                  editingTransaction.id,
+                  {
+                    amount: Math.abs(parseFloat(data.amount)),
+                    description: data.description,
+                    date: data.date,
+                    categoryId: data.categoryId,
+                    accountId: data.accountId,
+                  },
+                  editingTransaction.type,
+                );
+              }
               toast("Transaction mise à jour", { duration: 2000 });
               refresh();
               setRefreshKey((k) => k + 1);

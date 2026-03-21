@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, Wallet, Building, CreditCard, PiggyBank, Folder, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { ChevronLeft, Wallet, Building, CreditCard, PiggyBank, Folder, ArrowUpRight, ArrowDownLeft, Pencil } from 'lucide-react';
 import api from '@/lib/api';
 import { getIconComponent } from '@/lib/icons';
 import { AmountText } from '@/components/ui/AmountText';
@@ -15,7 +15,7 @@ const iconMap = {
   other: Folder,
 };
 
-export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
+export const CompteDetailPage = ({ accountId, onBack, isMobile, onEdit }) => {
   const [account, setAccount] = useState(null);
   const [year, setYear] = useState(2026);
   const [month, setMonth] = useState(3);
@@ -53,8 +53,8 @@ export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
               amount: isOutgoing ? -Math.abs(parseFloat(t.amount)) : Math.abs(parseFloat(t.amount)),
               displayDate: t.date,
               description: isOutgoing 
-                ? `Envoyer a ${accountMap[t.toAccountId] || 'Compte'}`
-                : `Recevoir de ${accountMap[t.fromAccountId] || 'Compte'}`,
+                ? `Envoyer a ${accountMap[t.toAccountId] || t.toAccountName || 'Compte supprimé'}`
+                : `Recevoir de ${accountMap[t.fromAccountId] || t.fromAccountName || 'Compte supprimé'}`,
             };
           });
 
@@ -280,7 +280,6 @@ export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
       }}>
         <button onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: '8px', minHeight: '48px', background: 'none', border: 'none', cursor: 'pointer' }}>
           <ChevronLeft size={24} color="var(--text-primary)" />
-          <span style={{ fontSize: '16px', color: 'var(--text-primary)' }}>Comptes</span>
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <IconComponent size={20} color="var(--text-secondary)" />
@@ -288,7 +287,12 @@ export const CompteDetailPage = ({ accountId, onBack, isMobile }) => {
             {account?.name}
           </span>
         </div>
-        <div style={{ width: 40 }} />
+        <button 
+          onClick={() => onEdit && onEdit(account)} 
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '48px', minHeight: '48px', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          <Pencil size={20} color="var(--text-secondary)" />
+        </button>
       </header>
 
 {/* Month Navigator */}

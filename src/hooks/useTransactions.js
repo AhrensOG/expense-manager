@@ -12,7 +12,7 @@ const transformExpense = (e) => ({
   categoryIcon: e.Category?.icon || 'folder',
   categoryColor: e.Category?.color || '#95A5A6',
   accountId: e.accountId,
-  accountName: e.Account?.name || null,
+  accountName: e.Account?.name || 'Compte supprimé',
   method: 'banque',
   amount: -parseFloat(e.amount),
   date: e.date,
@@ -27,7 +27,7 @@ const transformIncome = (i) => ({
   categoryIcon: i.Category?.icon || 'folder',
   categoryColor: i.Category?.color || '#2ECC71',
   accountId: i.accountId,
-  accountName: i.Account?.name || null,
+  accountName: i.Account?.name || 'Compte supprimé',
   method: 'banque',
   amount: parseFloat(i.amount),
   date: i.date,
@@ -43,8 +43,8 @@ const transformTransfer = (t) => ({
   categoryColor: '#8E8E93',
   fromAccountId: t.fromAccountId,
   toAccountId: t.toAccountId,
-  fromAccountName: t.fromAccount?.name || null,
-  toAccountName: t.toAccount?.name || null,
+  fromAccountName: t.fromAccount?.name || t.fromAccountName || 'Compte supprimé',
+  toAccountName: t.toAccount?.name || t.toAccountName || 'Compte supprimé',
   method: 'transfer',
   amount: parseFloat(t.amount),
   date: t.date,
@@ -170,6 +170,8 @@ export const useTransactions = (year, month) => {
       } else {
         if (type === 'income') {
           await api.deleteIncome(id);
+        } else if (type === 'transfer') {
+          await api.deleteTransfer(id);
         } else {
           await api.deleteExpense(id);
         }
@@ -190,6 +192,11 @@ export const useTransactions = (year, month) => {
         if (type === 'income') {
           const updated = await api.updateIncome(id, data);
           const transformed = transformIncome(updated);
+          setTransactions(prev => prev.map(t => t.id === id ? transformed : t));
+          return transformed;
+        } else if (type === 'transfer') {
+          const updated = await api.updateTransfer(id, data);
+          const transformed = transformTransfer(updated);
           setTransactions(prev => prev.map(t => t.id === id ? transformed : t));
           return transformed;
         } else {

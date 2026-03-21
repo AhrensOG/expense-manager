@@ -66,7 +66,7 @@ export const TransactionRow = ({ transaction, isDesktop = false, onClick }) => {
           </div>
           <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
             {isTransfer 
-              ? `${transaction.fromAccountName || 'Compte'} → ${transaction.toAccountName || 'Compte'}`
+              ? `${transaction.fromAccountName} → ${transaction.toAccountName}`
               : (transaction.accountName || transaction.method)
             }
           </div>
