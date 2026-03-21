@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "db:init": "tsx scripts/init-db.ts",
-    "db:seed": "tsx seed-categories.ts"
+    "db:seed": "tsx seed-categories.ts",
+    "db:migrate": "tsx migrations/run.ts",
+    "db:migrate:rollback": "tsx migrations/run.ts --rollback"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
