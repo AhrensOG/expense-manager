@@ -245,6 +245,16 @@ export const api = {
     if (!res.ok) throw new Error(data.message || 'Error deleting transfer');
     return data;
   },
+
+  async updateTransfer(id: number, transfer: Partial<Transfer>) {
+    const res = await fetchWithAuth(`${API_BASE}/transfers/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(transfer),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error updating transfer');
+    return data.transfer;
+  },
 };
 
 export default api;

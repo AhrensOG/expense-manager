@@ -11,8 +11,10 @@ export class Transfer extends Model {
   declare date: Date;
   declare userId: number;
   declare currencyId: number;
-  declare fromAccountId: number;
-  declare toAccountId: number;
+  declare fromAccountId: number | null;
+  declare toAccountId: number | null;
+  declare fromAccountName: string | null;
+  declare toAccountName: string | null;
 }
 
 Transfer.init(
@@ -52,7 +54,7 @@ Transfer.init(
     },
     fromAccountId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'accounts',
         key: 'id',
@@ -60,11 +62,19 @@ Transfer.init(
     },
     toAccountId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'accounts',
         key: 'id',
       },
+    },
+    fromAccountName: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    toAccountName: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
     },
   },
   {

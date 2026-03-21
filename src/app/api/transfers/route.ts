@@ -120,6 +120,8 @@ export async function POST(request: NextRequest) {
       currencyId,
       fromAccountId,
       toAccountId,
+      fromAccountName: fromAccount.name,
+      toAccountName: toAccount.name,
       userId: parseInt(token.sub),
     });
 

@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { z } from 'zod';
-import { Account, Currency } from '@/db';
+import { Account, Currency, Expense, Income, Transfer } from '@/db';
 
 const accountSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long').optional(),
@@ -108,6 +108,21 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
         { status: 404 }
       );
     }
+
+    const accountName = account.name;
+
+    await Transfer.update(
+      { fromAccountName: accountName, fromAccountId: null },
+      { where: { fromAccountId: accountId } }
+    );
+
+    await Transfer.update(
+      { toAccountName: accountName, toAccountId: null },
+      { where: { toAccountId: accountId } }
+    );
+
+    await Expense.destroy({ where: { accountId } });
+    await Income.destroy({ where: { accountId } });
 
     await account.destroy();
 
